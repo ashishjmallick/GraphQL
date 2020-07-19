@@ -1,0 +1,12 @@
+package com.ashish.GraphQLwithSpringBoot.Repository;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+
+import com.ashish.GraphQLwithSpringBoot.Output.Movie;
+
+
+public interface MovieRepository extends CrudRepository<Movie, Integer>{
+	public Movie findMovie(String movieName);
+}

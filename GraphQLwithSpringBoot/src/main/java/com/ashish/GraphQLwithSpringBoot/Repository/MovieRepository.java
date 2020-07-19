@@ -7,5 +7,5 @@ import com.ashish.GraphQLwithSpringBoot.Output.Movie;
 
 
 public interface MovieRepository extends JpaRepository<Movie, Integer>{
-	public Movie findMovie(String movieName);
+	public Movie findByMovieName(String movieName);
 }

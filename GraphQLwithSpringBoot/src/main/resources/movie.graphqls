@@ -5,21 +5,17 @@ schema {
 type Query{
 	
 	getAllMovieData : [Movie]
-	findMovie(movieName: String) : Movie
+	findByMovieName(movieName: String) : Movie
 	
 }
 
+
+
 type Movie {
-	movieId : Integer
-	movieName : String
+	movieId: Int!
+	movieName: String
 	category: String
-	imdbRating: Double
-	cast : [Cast]
+	imdbRating: Float
+	castlist: [String]
 }
 
-type Cast {
-	actorId : Integer
-	actorName : String
-	city: String
-	age: Integer
-}

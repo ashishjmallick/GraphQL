@@ -1,0 +1,25 @@
+schema {
+	query : Query
+}
+
+type Query{
+	
+	getAllMovieData : [Movie]
+	findMovie(movieName: String) : Movie
+	
+}
+
+type Movie {
+	movieId : Int
+	movieName : String
+	category: String
+	imdbRating: Double
+	cast : [Cast]
+}
+
+type Cast {
+	actorId : Integer
+	actorName : String
+	city: String
+	age: Integer
+}
