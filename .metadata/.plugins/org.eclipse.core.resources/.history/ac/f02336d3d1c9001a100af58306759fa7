@@ -19,7 +19,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -132,7 +131,7 @@ public class MovieController {
 						 ).build();
 		
 	}
-	//get all movies data  by passing specific nodes you need from entire data in every movie node
+	
 	@PostMapping("/getAllMovieData")
 	public ResponseEntity<Object> getAllMovieData(@RequestBody String query){
 		ExecutionResult result = graphQL.execute(query);
@@ -140,24 +139,18 @@ public class MovieController {
 		
 	}
 	
-	
-	// find a movie from the database by passing its name
 	@PostMapping("/findByMovieName")
-	public ResponseEntity<Object> findByMovieName(@RequestBody String query){
+	public ResponseEntity<Movie> findByMovieName(@RequestBody String query){
 		ExecutionResult result = graphQL.execute(query);
-		return new ResponseEntity<Object>(result, HttpStatus.OK);
+		return new ResponseEntity<Movie>((Movie) result, HttpStatus.OK);
 		
 	}
 	
-	//add movies to temporary database and return the no of movies inserted 
 	@PostMapping("/addMovie")
 	public String addMovies(@RequestBody List<Movie> movies) {
 		movieRepository.saveAll(movies);
 		return "record inserted " + movies.size();
 	}
 	
-	/*
-	 * @GetMapping("/findAllMovies") public List<Movie> findAllMovies() { return
-	 * (List<Movie>) movieRepository.findAll(); }
-	 */
+	
 }

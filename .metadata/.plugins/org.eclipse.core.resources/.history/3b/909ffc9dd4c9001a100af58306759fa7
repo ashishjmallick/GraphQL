@@ -156,8 +156,8 @@ public class MovieController {
 		return "record inserted " + movies.size();
 	}
 	
-	/*
-	 * @GetMapping("/findAllMovies") public List<Movie> findAllMovies() { return
-	 * (List<Movie>) movieRepository.findAll(); }
-	 */
+	@GetMapping("/findAllMovies")
+	public List<Movie> findAllMovies() {
+		return (List<Movie>) movieRepository.findAll();
+	}
 }
