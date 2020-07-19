@@ -1,0 +1,5 @@
+package movieRepository;
+
+public interface MovieRepository {
+
+}

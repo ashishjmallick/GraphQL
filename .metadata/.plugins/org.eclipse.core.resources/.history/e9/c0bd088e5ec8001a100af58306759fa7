@@ -1,0 +1,43 @@
+package com.ashish.GraphQLwithSpringBoot.controller;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ashish.GraphQLwithSpringBoot.Output.ResponseTO;
+
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+
+@RestController
+public class MovieController {
+
+	/*
+	 * @Autowired private MovieRespository movieRepository; //This is helper class
+	 */	 	
+	
+	private GraphQL  graphQL;
+	
+	@Value("classpath:movie.graphqls")
+	private Resource schemaResource;
+	
+	@PostMapping
+	public ResponseEntity<ResponseTO> getMovieData(@RequestBody String query){
+		ExecutionResult result = graphQL.execute(query);
+		return new ResponseEntity<ResponseTO>((ResponseTO) result, HttpStatus.OK);
+		
+	}
+	
+	@PostConstruct
+	public void loadSchema() {
+		File schemaFile = 
+	}
+	
+}

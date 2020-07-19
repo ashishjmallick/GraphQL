@@ -1,0 +1,123 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+
+package com.ashish.GraphQLwithSpringBoot.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ashish.GraphQLwithSpringBoot.Output.Movie;
+
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+import irepository.IRepository;
+
+@RestController
+public class MovieController {
+
+	/*
+	 * @Autowired private MovieRespository movieRepository; //This is helper class
+	 */	 	
+	
+	private GraphQL  graphQL;
+	
+	@Value("classpath:movie.graphqls")
+	private Resource schemaResource;
+	
+	@Autowired
+	private IRepository repository;
+	
+	
+	@PostConstruct
+	public void loadSchema() throws IOException {
+		File schemaFile = schemaResource.getFile();
+		TypeDefinitionRegistry  typedefRegistry = new SchemaParser().parse(schemaFile);
+		RuntimeWiring runtimeWiring = buildWiring();
+		GraphQLSchema graphQLSchema = new SchemaGenerator().makeExecutableSchema(typedefRegistry, runtimeWiring);
+		graphQL = GraphQL.newGraphQL(graphQLSchema).build();
+	}
+	
+	
+	private RuntimeWiring buildWiring() {
+		DataFetcher<List<Movie>> allMovieDataFetcher = data ->{
+			return (List<Movie>)repository.findAll();
+		};
+		DataFetcher<Movie> findMovieDataFetcher = data ->{
+			return (Movie) repository.findMovie(data.getArgument("movieName"));
+		};
+		
+		return RuntimeWiring.newRuntimeWiring().
+				type("Query", 
+						  typeWriting -> typeWriting.dataFetcher("getAllMovieData", allMovieDataFetcher)
+						  							.dataFetcher("findMovie", findMovieDataFetcher)
+						 ).build();
+		
+	}
+	
+	@PostMapping("/getAllMovieData")
+	public ResponseEntity<List<Movie>> getAllMovieData(@RequestBody String query){
+		ExecutionResult result = graphQL.execute(query);
+		return new ResponseEntity<List<Movie>>((List<Movie>) result, HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/findMovie")
+	public ResponseEntity<Movie> findMovie(@RequestBody String query){
+		ExecutionResult result = graphQL.execute(query);
+		return new ResponseEntity<Movie>((Movie) result, HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/addMovie")
+	public String addMovies(@RequestBody Movie movie) {
+		repository.save(movie);
+		return "record inserted " + movie.size();
+	}
+	
+	private Product product1;
+    private Product product2;
+    private Product product3;
+    private Product product4;
+    private Product product5;
+    private List<Product> productsList;
+
+    private void initializeProducts() {
+        String[] productBatchList = {"batch 1"};
+
+        product1 = new Product("1", "product1", "Brand1", Float.valueOf("1.01"), 10, productBatchList);
+        product2 = new Product("2", "product2", "Brand2", Float.valueOf("2.01"), 20, productBatchList);
+        product3 = new Product("3", "product3", "Brand3", Float.valueOf("3.01"), 30, productBatchList);
+        product4 = new Product("4", "product4", "Brand4", Float.valueOf("4.01"), 40, productBatchList);
+        product5 = new Product("5", "product5", "Brand4", Float.valueOf("5.01"), 50, productBatchList);
+        productsList = new ArrayList<>();
+        productsList.add(product1);
+        productsList.add(product2);
+        productsList.add(product3);
+        productsList.add(product4);
+        productsList.add(product5);
+
+
+    }
+}

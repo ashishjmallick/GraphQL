@@ -1,0 +1,28 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+
+package com.ashish.GraphQLwithSpringBoot.Output;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+public class Cast {
+
+	@Id
+	private String actorId;
+	
+	private String actorName;
+	private String city;
+	private Integer  age;
+}

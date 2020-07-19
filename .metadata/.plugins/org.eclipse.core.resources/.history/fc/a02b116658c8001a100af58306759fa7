@@ -1,0 +1,5 @@
+package com.ashish.GraphQLwithSpringBoot.controller;
+
+public class MovieController {
+
+}

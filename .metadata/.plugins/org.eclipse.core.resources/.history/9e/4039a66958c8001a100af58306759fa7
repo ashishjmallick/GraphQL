@@ -1,0 +1,5 @@
+package com.ashish.GraphQLwithSpringBoot.Output;
+
+public class Cast {
+
+}

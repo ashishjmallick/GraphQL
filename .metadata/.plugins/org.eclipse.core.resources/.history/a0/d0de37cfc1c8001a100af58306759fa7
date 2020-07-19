@@ -1,0 +1,5 @@
+package com.ashish.GraphQLwithSpringBoot.Inputs;
+
+public class RequestTO {
+
+}

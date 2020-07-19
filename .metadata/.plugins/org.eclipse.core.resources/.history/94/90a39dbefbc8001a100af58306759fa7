@@ -1,0 +1,28 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+
+package com.ashish.GraphQLwithSpringBoot.Output;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+public class ResponseTO {
+
+	@Id
+	private Integer id;
+	
+	private String movieName;
+	private String category;
+	private String imdbRating;
+	private Cast[] cast;
+
+}

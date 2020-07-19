@@ -1,0 +1,41 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+
+package com.ashish.GraphQLwithSpringBoot.Output;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Table
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+public class Movie {
+
+	@Id
+	private Integer movieid;
+	
+	private String movieName;
+	private String category;
+	private Double imdbRating;
+	private Cast[] cast;
+	
+	public Movie(Integer id, String movieName, String category, Double imdbRating, Cast[] cast) {
+		this.id = id;
+		this.movieName = movieName;
+		this.category = category;
+		this.imdbRating = imdbRating;
+		this.cast = cast;
+	}
+
+	
+}

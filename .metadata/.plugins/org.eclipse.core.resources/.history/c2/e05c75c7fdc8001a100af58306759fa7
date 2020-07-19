@@ -1,0 +1,92 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+
+package com.ashish.GraphQLwithSpringBoot.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ashish.GraphQLwithSpringBoot.Output.ResponseTO;
+
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+import irepository.IRepository;
+
+@RestController
+public class MovieController {
+
+	/*
+	 * @Autowired private MovieRespository movieRepository; //This is helper class
+	 */	 	
+	
+	private GraphQL  graphQL;
+	
+	@Value("classpath:movie.graphqls")
+	private Resource schemaResource;
+	
+	
+	private IRepository repository;
+	
+	
+	@PostMapping
+	public ResponseEntity<List<ResponseTO>> getAllMovieData(@RequestBody String query){
+		ExecutionResult result = graphQL.execute(query);
+		return new ResponseEntity<List<ResponseTO>>((List<ResponseTO>) result, HttpStatus.OK);
+		
+	}
+	
+	@PostMapping
+	public ResponseEntity<ResponseTO> findMovie(@RequestBody String query){
+		ExecutionResult result = graphQL.execute(query);
+		return new ResponseEntity<ResponseTO>((ResponseTO) result, HttpStatus.OK);
+		
+	}
+	
+	@PostConstruct
+	public void loadSchema() throws IOException {
+		File schemaFile = schemaResource.getFile();
+		TypeDefinitionRegistry  typedefRegistry = new SchemaParser().parse(schemaFile);
+		RuntimeWiring runtimeWiring = buildWiring();
+		GraphQLSchema graphQLSchema = new SchemaGenerator().makeExecutableSchema(typedefRegistry, runtimeWiring);
+		graphQL = GraphQL.newGraphQL(graphQLSchema).build();
+	}
+	
+	
+	private RuntimeWiring buildWiring() {
+		DataFetcher<List<ResponseTO>> allMovieDataFetcher = data ->{
+			return (List<ResponseTO>)repository.findAll();
+		};
+		DataFetcher<ResponseTO> findMovieDataFetcher = data ->{
+			return (ResponseTO) repository.findMovie(data.getArgument("movieName"));
+		};
+		
+		return RuntimeWiring.newRuntimeWiring().
+				type("Query", 
+						  typeWriting -> typeWriting.dataFetcher("getAllMovieData", allMovieDataFetcher)
+						  							.dataFetcher("findMovie", findMovieDataFetcher)
+						 ).build();
+		
+	}
+}

@@ -1,0 +1,16 @@
+/*
+ *  @Author: Ashish Mallick
+ *  linkedIn : https://www.linkedin.com/in/ashish-mallick
+ */
+
+package irepository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ashish.GraphQLwithSpringBoot.Output.Movie;
+
+public interface IMovieRepository extends JpaRepository<Movie, String> {
+
+	Movie findMovie(String movieName);
+
+}

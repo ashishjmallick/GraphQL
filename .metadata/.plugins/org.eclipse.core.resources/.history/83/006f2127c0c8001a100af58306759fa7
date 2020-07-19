@@ -1,0 +1,17 @@
+package com.ashish.GraphQLwithSpringBoot.Output;
+
+import javax.persistence.Entity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+public class ResponseTO {
+
+	private Integer id;
+	private String movieName;
+	private Cast[] cast;
+	
+}
